@@ -1,0 +1,29 @@
+<div>
+    <img src="{{ url_for('static', filename='images/logo.png') }}" class="mx-auto d-block my_animation" width="60" height="60" alt="LOGO"><br>
+    <div>
+        <p class="text-center">Aplicatie de gestionare a datelor unei firme de avocatura</p>
+    </div>
+    <div>
+        <ul class="nav justify-content-center">
+		      <li class="nav-item active">
+		        <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-home"> </i> Pagina principala</a>
+		      </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('avocati_clienti') }}"><i class="fas fa-list"> </i> Avocati & Clienti</a>
+			  </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('cazuri') }}"><i class="fas fa-gavel"> </i> Cazurile firmei</a>
+			  </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('adaugare_avocati_clienti') }}"><i class="fas fa-user-plus"> </i> Adaugare Avocati & Clienti</a>
+			  </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('adauga_caz') }}"><i class="fas fa-plus"> </i> Adaugare caz</a>
+			  </li>
+		    </ul>
+    </div>
+    <hr>
+    <div class = "row">
+        <p class="mx-auto">Copyright <span style="font-family: Arial;">&copy;</span> Enrico Garaiman 2021 &bull; All rights reserved</p>
+    </div>
+</div>

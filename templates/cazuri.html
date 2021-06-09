@@ -1,0 +1,162 @@
+<!--
+@author: Enrico Garaiman
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Avocati & clienti</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+	<!--  Icons -->
+	<script src="https://kit.fontawesome.com/d8dbbaf693.js" crossorigin="anonymous"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark my-bg-transparent fixed-top">
+		   <a class="navbar-brand" href="{{ url_for('login') }}">
+		    <img src="{{ url_for('static', filename='images/logo.png') }}" class="my_animation" width="30" height="30" alt="LOGO">
+		  </a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav ml-auto">
+		      <li class="nav-item">
+		        <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-home"> </i> Pagina principala</a>
+		      </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('avocati_clienti') }}"><i class="fas fa-list"> </i> Avocati & Clienti</a>
+			  </li>
+			  <li class="nav-item active">
+			    <a class="nav-link" href="{{ url_for('cazuri') }}"><i class="fas fa-gavel"> </i> Cazurile firmei</a>
+			  </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('adaugare_avocati_clienti') }}"><i class="fas fa-user-plus"> </i> Adaugare Avocati & Clienti</a>
+			  </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('adauga_caz') }}"><i class="fas fa-plus"> </i> Adaugare caz</a>
+			  </li>
+			  <li class="nav-item">
+			  	<a class="nav-link btn btn-danger" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"> </i> Logout</a>
+			  </li>
+		    </ul>
+		  </div>
+		</nav>
+    </header>
+<section style="background-image: url({{ url_for('static',filename = '/images/secondary-bg.jpg')}});" class="secondary-bg">
+	<h1 class="h1 cazuri_title"> Cazurile firmei</h1>
+		{% if msg == 'Datele selectate au fost sterse cu succes!' or msg == "Cazul selectat a fost actualizat cu succes!"%}
+		<div class="container"><div style="text-align: center;" class="mx-auto alert alert-success" role="alert">{{ msg }}</div></div>
+		{% elif msg == 'A aparut o eroare. Incercati din nou' %}
+		<div class="container"><div style="text-align: center;" class="mx-auto alert alert-danger" role="alert">{{ msg }}</div></div>
+		{% endif %}
+        <div class="col-md-3 width-80 cazuri-form">
+        	<input type="text" id="my_input" onkeyup="filter()" placeholder="Cautare dupa numele cazului...">
+        </div>
+        <form method="post">
+        	<div class="table-responsive-lg">
+            <table id="tabel_cazuri" class="table table-striped table-dark my-table">
+                <tr>
+                    <th><b></b></th>
+                    <th><b>ID Caz</b></th>
+                    <th><b>Numele cazului</b></th>
+                    <th><b>Data</b></th>
+                    <th><b>ID Avocat</b></th>
+                    <th><b>Prenume avocat</b></th>
+                    <th><b>Nume avocat</b></th>
+                    <th><b>ID Client</b></th>
+                    <th><b>Denumire firma</b></th>
+                    <th><b>Prenume reprezentant</b></th>
+                    <th><b>Nume reprezentant</b></th>
+                    <th><b>Status:</b></th>
+                </tr>
+				{% for caz in cazuri: %}
+                <tr>
+                    <td><input type="checkbox" name="primarykey" class="checkbox checkbox_update" value="{{caz['idcaz']}}" /></td><td>{{caz['idcaz']}}</td>
+                    <td>{{caz['numele_cazului']}}</td>
+                    <td>{{caz['data']}}</td>
+                    <td>{{caz['idavocat']}}</td>
+                    <td>{{caz['prenume']}}</td>
+                    <td>{{caz['nume']}}</td>
+                    <td>{{caz['idclient']}}</td>
+                    <td>{{caz['denumire_firma']}}</td>
+                    <td>{{caz['prenume_reprezentant']}}</td>
+                    <td>{{caz['nume_reprezentant']}}</td>
+					<!-- Schimbare culoare in functie de status -->
+					{% if caz['status'] == 'Castigat': %}
+						<td class="text-success">{{caz['status']}}</td>
+					{% elif caz['status'] == 'Pierdut' %}
+						<td class="text-danger">{{caz['status']}}</td>
+					{% elif caz['status'] == 'In progres' %}
+						<td class="text-warning">{{caz['status']}}</td>
+					{% endif %}
+                </tr>
+				{% endfor %}
+            </table><br/>
+            <div class="cazuri-form submit-btns" align="center">
+			  <input id="check" type="submit" name="delete" class="btn btn btn-danger delete my_animation" value="Sterge cazurile bifate" disabled="disabled" onclick="return confirm('Esti sigur ca vrei sa stergi cazurile?')">
+			  <input id="check2" type="submit" name="update" class="btn btn btn-warning delete my_animation" value="Modifica cazul bifat" disabled="disabled">
+			  <a href="{{ url_for('adauga_caz') }}"><button type="button" class="btn btn-dark my_animation">Adauga un nou caz</button></a>
+            </div>
+            </div>
+        </form>
+        </section>
+    <footer style="background-image: url({{ url_for('static',filename = '/images/footerbg.jpg')}});">
+            {% include 'footer.html' %}
+    </footer>
+
+    <!-- JavaScript Bootstrap, jquery, ajax -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script>
+		<!-- Buton de stergere disabled/enabled delete -->
+		 $('.btn-danger').prop('disabled', !$('.checkbox:checked').length); //initially disable/enable button based on checked length
+		 $('input[type=checkbox]').click(function() {
+		   console.log($('.checkbox:checkbox:checked').length);
+		   if ($('.checkbox:checkbox:checked').length >= 1) {
+		     $('.btn-danger').prop('disabled', false);
+		   } else {
+		     $('.btn-danger').prop('disabled', true);
+		   }
+		 });
+		<!-- Buton de stergere disabled/enabled update -->
+		 $('.btn-warning').prop('disabled', !$('.checkbox_update:checked').length); //initially disable/enable button based on checked length
+		 $('input[type=checkbox]').click(function() {
+		   console.log($('.checkbox_update:checkbox:checked').length);
+		   if ($('.checkbox_update:checkbox:checked').length == 1) {
+		     $('.btn-warning').prop('disabled', false);
+		   } else {
+		     $('.btn-warning').prop('disabled', true);
+		   }
+		 });
+		<!-- Filtrare tabel -->
+		function filter() {
+			  var input, filter, table, tr, td, i, txtValue;
+			  input = document.getElementById("my_input");
+			  filter = input.value.toUpperCase();
+			  table = document.getElementById("tabel_cazuri");
+			  tr = table.getElementsByTagName("tr");
+			  for (i = 0; i < tr.length; i++) {
+			    td = tr[i].getElementsByTagName("td")[2];
+			    if (td) {
+			      txtValue = td.textContent || td.innerText;
+			      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			        tr[i].style.display = "";
+			      } else {
+			        tr[i].style.display = "none";
+			      }
+			    }
+			  }
+			}
+	</script>
+</body>
+</html>
+
